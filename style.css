@@ -1,0 +1,24 @@
+/* Set text to Arial */
+body{
+    font-family: Arial;
+}
+/* Center headings */
+h1{
+    text-align: center;
+}
+h2{
+    text-align: center;
+}
+
+  /* Create three equal columns that floats next to each other */
+  .column {
+    float: left;
+    width: 33.33%;
+  }
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
