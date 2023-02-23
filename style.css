@@ -11,16 +11,14 @@ h2{
 }
 
   /* Create three equal columns that floats next to each other */
-  .column {
-    float: left;
-    width: 33.33%;
+  .row{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
   }
-  
-  /* Clear floats after the columns */
-  .row:after {
-    content: "";
-    display: table;
-    clear: both;
+  .column{
+    flex: 33.33%;
   }
 
   .point{

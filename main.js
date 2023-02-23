@@ -125,3 +125,15 @@ d3.csv("data/iris.csv").then((data) => {
 
 
 });
+
+// ------------------ RIGHT PLOT -----------------------------------------
+const RIGHT = d3.select("#right") 
+.append("svg") 
+    .attr("height", FRAME_HEIGHT)   
+    .attr("width", FRAME_WIDTH)
+    .attr("class", "frame");
+
+d3.csv("data/iris.csv").then((data) => {
+
+    
+});
