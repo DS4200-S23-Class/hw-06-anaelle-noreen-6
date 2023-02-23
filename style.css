@@ -22,3 +22,7 @@ h2{
     display: table;
     clear: both;
   }
+
+  .point{
+    opacity : 0.5;
+  }
