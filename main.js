@@ -127,11 +127,13 @@ d3.csv("data/iris.csv").then((data) => {
 });
 
 // ------------------ RIGHT PLOT -----------------------------------------
+// Add the SVG
 const RIGHT = d3.select("#right") 
 .append("svg") 
     .attr("height", FRAME_HEIGHT)   
     .attr("width", FRAME_WIDTH)
     .attr("class", "frame");
+
 
 d3.csv("data/iris.csv").then((data) => {
 
@@ -140,10 +142,9 @@ d3.csv("data/iris.csv").then((data) => {
     let species_amt = species_counts.map(function(x){
         return x[1];
     });
-    console.log(species_counts[0]);    
 
+    // Gets the hightest amount
     const Y_MAX = d3.max(species_amt);
-    console.log(Y_MAX);
 
 
     // Add X axis
@@ -166,7 +167,7 @@ d3.csv("data/iris.csv").then((data) => {
         .attr("transform", "translate(" +  MARGINS.left +","+(MARGINS.top)+ ")")
         .call(d3.axisLeft(y));
 
-         // Add Bars
+    // Add Bars
     RIGHT.selectAll("mybar")
         .data(species_counts)
         .enter()
