@@ -13,7 +13,7 @@ function map_color(species){
         return "cornflowerblue";
     }
     else{
-        return black;
+        return "black";
     }
 };
 
@@ -135,5 +135,48 @@ const RIGHT = d3.select("#right")
 
 d3.csv("data/iris.csv").then((data) => {
 
-    
+    // Makes a Map with the species name, and the number of times that species appears in the column
+    let species_counts = Array.from(d3.rollup(data, v => v.length, d => d.Species));
+    let species_amt = species_counts.map(function(x){
+        return x[1];
+    });
+    console.log(species_counts[0]);    
+
+    const Y_MAX = d3.max(species_amt);
+    console.log(Y_MAX);
+
+
+    // Add X axis
+    let x = d3.scaleBand()
+        .range([ 0, FRAME_WIDTH - MARGINS.left - MARGINS.right ])
+        .domain(species_counts.map(function(d) { return d[0]; }))
+        .padding(0.2);
+
+    RIGHT.append("g")
+        .attr("transform", "translate(" +  MARGINS.left +","+ (FRAME_HEIGHT - MARGINS.top) + ")")
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .style("text-anchor", "middle");
+
+    // Add Y axis
+    let y = d3.scaleLinear()
+        .domain([0, Y_MAX + 5])
+        .range([FRAME_HEIGHT- MARGINS.top - MARGINS.bottom, 0]);
+    RIGHT.append("g")
+        .attr("transform", "translate(" +  MARGINS.left +","+(MARGINS.top)+ ")")
+        .call(d3.axisLeft(y));
+
+         // Add Bars
+    RIGHT.selectAll("mybar")
+        .data(species_counts)
+        .enter()
+        .append("rect")
+        .attr("class", "bars")
+        .attr("x", function(d) { return x(d[0]) + MARGINS.left; })
+        .attr("y", function(d) { return y(d[1]) + MARGINS.top; })
+        .style("fill", (d) => {return map_color(d[0])})
+        .attr("width", x.bandwidth())
+        .attr("height", function(d) { 
+            return FRAME_HEIGHT- MARGINS.top - MARGINS.bottom - y(d[1]); 
+    });
 });
