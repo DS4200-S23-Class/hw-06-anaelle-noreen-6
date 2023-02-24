@@ -34,6 +34,7 @@ d3.csv("data/iris.csv").then((data) => {
     LEFT.append("text")
     .attr("x", FRAME_WIDTH/2)
     .attr("y", MARGINS.top)
+    .attr("class", "plot_titles")
     .attr("text-anchor", "middle")
     .style("font-size", "16px")
     .text("Sepal Length vs Petal Length");
@@ -87,6 +88,7 @@ d3.csv("data/iris.csv").then((data) => {
     MIDDLE.append("text")
     .attr("x", FRAME_WIDTH/2)
     .attr("y", MARGINS.top)
+    .attr("class", "plot_titles")
     .attr("text-anchor", "middle")
     .style("font-size", "16px")
     .text("Sepal Width vs Petal Width");
@@ -145,6 +147,15 @@ d3.csv("data/iris.csv").then((data) => {
 
     // Gets the hightest amount
     const Y_MAX = d3.max(species_amt);
+
+    // TITLE
+    RIGHT.append("text")
+    .attr("x", FRAME_WIDTH/2)
+    .attr("y", MARGINS.top)
+    .attr("class", "plot_titles")
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .text("Counts of Species");
 
 
     // Add X axis

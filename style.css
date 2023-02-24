@@ -10,6 +10,10 @@ h2{
     text-align: center;
 }
 
+.plot_titles{
+    font-weight: bold;
+}
+
   /* Create three equal columns that floats next to each other */
   .row{
     display: flex;
