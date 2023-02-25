@@ -35,6 +35,6 @@ h2{
 
   .selected {
     opacity: 1 !important;
-    stroke: black;
+    stroke: orangered;
     stroke-width: 1px;
   }
