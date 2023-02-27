@@ -17,7 +17,8 @@ function map_color(species){
     }
 };
 
-let left_dots, right_dots, bars;
+let left_dots, middle_dots, bars;
+let left_x, middle_x, left_y, middle_y;
 
 // ------------ LEFT PLOT -----------------
 // Make svg to house visualization
@@ -42,22 +43,22 @@ d3.csv("data/iris.csv").then((data) => {
     .text("Sepal Length vs Petal Length");
 
     // Make x-axis based on petal length
-    let x = d3.scaleLinear()
+    left_x = d3.scaleLinear()
     .domain([0, parseInt(X_MAX) + 1])
     .range([ 0, FRAME_WIDTH - MARGINS.left - MARGINS.right]);
     // Add X-axis
     LEFT.append("g")
     .attr("transform", "translate(" +  MARGINS.left +","+ (FRAME_HEIGHT - MARGINS.top) + ")")
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(left_x));
 
     // y-Scale
-    let y = d3.scaleLinear()
+    left_y = d3.scaleLinear()
     .domain([0, parseInt(Y_MAX) + 1])
     .range([FRAME_HEIGHT - MARGINS.top - MARGINS.bottom, 0]);
     // Add Y axis
     LEFT.append("g")
     .attr("transform", "translate(" + MARGINS.left + ","+ MARGINS.top +")")
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(left_y));
 
      // Add points from data
      left_dots = LEFT.append('g')
@@ -67,8 +68,8 @@ d3.csv("data/iris.csv").then((data) => {
      .append("circle")
          .attr("class",  (d) => {return "point " + d.Species})
          .attr("id", (d) => {return d.id})
-         .attr("cx", (d) => { return (x(d.Sepal_Length) + MARGINS.left); } )
-         .attr("cy", (d) =>{ return (y(d.Petal_Length) + MARGINS.top); } )
+         .attr("cx", (d) => { return (left_x(d.Sepal_Length) + MARGINS.left); } )
+         .attr("cy", (d) =>{ return (left_y(d.Petal_Length) + MARGINS.top); } )
          .style("fill", (d) => {return map_color(d.Species)})
          .attr("r", 5);
 
@@ -96,49 +97,62 @@ d3.csv("data/iris.csv").then((data) => {
     .text("Sepal Width vs Petal Width");
 
     // Make x-axis based on petal width
-    let x = d3.scaleLinear()
+    middle_x = d3.scaleLinear()
     .domain([0, parseInt(X_MAX) + 1])
     .range([ 0, FRAME_WIDTH - MARGINS.left - MARGINS.right]);
 
     // Add X-axis
     MIDDLE.append("g")
     .attr("transform", "translate(" +  MARGINS.left +","+ (FRAME_HEIGHT - MARGINS.top) + ")")
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(middle_x));
 
     // y-Scale
-    let y = d3.scaleLinear()
+    middle_y = d3.scaleLinear()
     .domain([0, parseInt(Y_MAX) + 1])
     .range([FRAME_HEIGHT - MARGINS.top - MARGINS.bottom, 0]);
     // Add Y axis
     MIDDLE.append("g")
     .attr("transform", "translate(" + MARGINS.left + ","+ MARGINS.top +")")
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(middle_y));
 
     // Add points from data
-    let middle_dots = MIDDLE.append('g')
+    middle_dots = MIDDLE.append('g')
     .selectAll("dot")
     .data(data)
     .enter()
     .append("circle")
         .attr("class", (d) => {return "point " + d.Species})
         .attr("id", (d) => {return d.id })
-        .attr("cx", (d) => { return (x(d.Sepal_Width)) + MARGINS.left; } )
-        .attr("cy", (d) =>{ return (y(d.Petal_Width)) + MARGINS.bottom; } )
+        .attr("cx", (d) => { return (middle_x(d.Sepal_Width)) + MARGINS.left; } )
+        .attr("cy", (d) =>{ return (middle_y(d.Petal_Width)) + MARGINS.bottom; } )
         .style("fill", (d) => {return map_color(d.Species)})
         .attr("r", 5);
 
+
+        // Function that is triggered when brushing is performed
+    function updateChartMiddle(event) {
+    extent = event.selection
+    middle_dots.classed("selected", function(d){ return isBrushed(extent, (middle_x(d.Sepal_Width) + MARGINS.left), (middle_y(d.Petal_Width) + MARGINS.top)) } )
+    left_dots.classed("selected", function(d){ return isBrushed(extent, (left_x(d.Sepal_Length) + MARGINS.left), (left_y(d.Petal_Length) + MARGINS.top)) } )
+    
+    }
+    // function updateChartLeft(event) {
+    //     extent = event.selection
+    //     // middle_dots.classed("selected", function(d){ return isBrushed(extent, (x(d.Sepal_Width) + MARGINS.left), (y(d.Petal_Width) + MARGINS.top)) } )
+    //     left_dots.classed("selected", function(d){ return isBrushed(extent, (left_x(d.Sepal_Length) + MARGINS.left), (left_y(d.Petal_Length) + MARGINS.top)) } )
+        
+    //     }
            // Add brushing
   MIDDLE.call(d3.brush()                 // Add the brush feature using the d3.brush function
   .extent( [[0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-  .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
-)
+  .on("start brush", updateChartMiddle) // Each time the brush selection changes, trigger the 'updateChart' function
+  );
+//   LEFT.call(d3.brush()                 // Add the brush feature using the d3.brush function
+//   .extent( [[0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+//   .on("start brush", updateChartLeft) // Each time the brush selection changes, trigger the 'updateChart' function
+//   );
 
-// Function that is triggered when brushing is performed
-function updateChart(event) {
-extent = event.selection
-middle_dots.classed("selected", function(d){ return isBrushed(extent, (x(d.Sepal_Width) + MARGINS.left), (y(d.Petal_Width) + MARGINS.top)) } )
 
-}
 
 // A function that return TRUE or FALSE according if a dot is in the selection or not
 function isBrushed(brush_coords, cx, cy) {
