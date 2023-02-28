@@ -2,6 +2,7 @@ const FRAME_HEIGHT = 400;
 const FRAME_WIDTH = 400;
 const MARGINS = {left: 30, right: 20, top: 20, bottom: 20};
 
+// instead of of mapping to a color map it to a class in css
 function map_color(species){
     if(species == "setosa"){
         return "coral";
@@ -33,14 +34,14 @@ d3.csv("data/iris.csv").then((data) => {
     const X_MAX = d3.max(data, (d) => {return (d.Sepal_Length)});
     const Y_MAX = d3.max(data, (d) => { return (d.Petal_Length); });
 
-    // TITLE
-    LEFT.append("text")
-    .attr("x", FRAME_WIDTH/2)
-    .attr("y", MARGINS.top)
-    .attr("class", "plot_titles")
-    .attr("text-anchor", "middle")
-    .style("font-size", "16px")
-    .text("Sepal Length vs Petal Length");
+    // // TITLE
+    // LEFT.append("text")
+    // .attr("x", FRAME_WIDTH/2)
+    // .attr("y", MARGINS.top)
+    // .attr("class", "plot_titles")
+    // .attr("text-anchor", "middle")
+    // .style("font-size", "16px")
+    // .text("Sepal Length vs Petal Length");
 
     // Make x-axis based on petal length
     left_x = d3.scaleLinear()
@@ -88,13 +89,13 @@ d3.csv("data/iris.csv").then((data) => {
     console.log("SEPAL" + X_MAX, "PETAL" + Y_MAX);
 
     // TITLE
-    MIDDLE.append("text")
-    .attr("x", FRAME_WIDTH/2)
-    .attr("y", MARGINS.top)
-    .attr("class", "plot_titles")
-    .attr("text-anchor", "middle")
-    .style("font-size", "16px")
-    .text("Sepal Width vs Petal Width");
+    // MIDDLE.append("text")
+    // .attr("x", FRAME_WIDTH/2)
+    // .attr("y", MARGINS.top)
+    // .attr("class", "plot_titles")
+    // .attr("text-anchor", "middle")
+    // .style("font-size", "16px")
+    // .text("Sepal Width vs Petal Width");
 
     // Make x-axis based on petal width
     middle_x = d3.scaleLinear()
@@ -151,14 +152,14 @@ d3.csv("data/iris.csv").then((data) => {
     // Gets the hightest amount
     const Y_MAX = d3.max(species_amt);
 
-    // TITLE
-    RIGHT.append("text")
-    .attr("x", FRAME_WIDTH/2)
-    .attr("y", MARGINS.top)
-    .attr("class", "plot_titles")
-    .attr("text-anchor", "middle")
-    .style("font-size", "16px")
-    .text("Counts of Species");
+    // // TITLE
+    // RIGHT.append("text")
+    // .attr("x", FRAME_WIDTH/2)
+    // .attr("y", MARGINS.top)
+    // .attr("class", "plot_titles")
+    // .attr("text-anchor", "middle")
+    // .style("font-size", "16px")
+    // .text("Counts of Species");
 
 
     // Add X axis
