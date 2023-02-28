@@ -18,7 +18,7 @@ function map_color(species){
 };
 
 let left_dots, middle_dots, bars;
-let left_x, middle_x, left_y, middle_y;
+let left_x, middle_x, left_y, middle_y, bars_x, bars_y;
 
 // ------------ LEFT PLOT -----------------
 // Make svg to house visualization
@@ -129,48 +129,7 @@ d3.csv("data/iris.csv").then((data) => {
         .attr("r", 5);
 
 
-        // Function that is triggered when brushing is performed
-    function updateCharts(event) {
-        extent = event.selection
-        let selection_points;
-        middle_dots.classed("selected", function(d){ 
-            return isBrushed(extent, (middle_x(d.Sepal_Width) + MARGINS.left), (middle_y(d.Petal_Width) + MARGINS.top)) 
-             } );
-        left_dots.classed("selected", function(d){ 
-         return isBrushed(extent, (middle_x(d.Sepal_Width) + MARGINS.left), (middle_y(d.Petal_Width) + MARGINS.top)) 
-        } ); 
-        bars.classed("selected", function(d){ return d.species } );        
-    };
-
-    function updateBarChart(event){
-        extent = event.selection
-        bars.classed("selected", function(d){ return d.species } )
     
-
-    };
-   
-    // Add brushing
-  MIDDLE.call(d3.brush()                 // Add the brush feature using the d3.brush function
-  .extent( [[0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-  .on("start brush", updateCharts) // Each time the brush selection changes, trigger the 'updateChart' function
-  );
-//   LEFT.call(d3.brush()                 // Add the brush feature using the d3.brush function
-//   .extent( [[0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-//   .on("start brush", updateChartLeft) // Each time the brush selection changes, trigger the 'updateChart' function
-//   );
-
-
-
-// A function that return TRUE or FALSE according if a dot is in the selection or not
-function isBrushed(brush_coords, cx, cy) {
-   var x0 = brush_coords[0][0],
-       x1 = brush_coords[1][0],
-       y0 = brush_coords[0][1],
-       y1 = brush_coords[1][1];
-  return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;    // This return TRUE or FALSE depending on if the points is in the selected area
-}
-
-});
 
 // ------------------ RIGHT PLOT -----------------------------------------
 // Add the SVG
@@ -203,24 +162,24 @@ d3.csv("data/iris.csv").then((data) => {
 
 
     // Add X axis
-    let x = d3.scaleBand()
+    bars_x = d3.scaleBand()
         .range([ 0, FRAME_WIDTH - MARGINS.left - MARGINS.right ])
         .domain(species_counts.map(function(d) { return d[0]; }))
         .padding(0.2);
 
     RIGHT.append("g")
         .attr("transform", "translate(" +  MARGINS.left +","+ (FRAME_HEIGHT - MARGINS.top) + ")")
-        .call(d3.axisBottom(x))
+        .call(d3.axisBottom(bars_x))
         .selectAll("text")
         .style("text-anchor", "middle");
 
     // Add Y axis
-    let y = d3.scaleLinear()
+    bars_y = d3.scaleLinear()
         .domain([0, Y_MAX + 5])
         .range([FRAME_HEIGHT- MARGINS.top - MARGINS.bottom, 0]);
     RIGHT.append("g")
         .attr("transform", "translate(" +  MARGINS.left +","+(MARGINS.top)+ ")")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(bars_y));
 
     // Add Bars
     bars = RIGHT.selectAll("mybar")
@@ -228,14 +187,48 @@ d3.csv("data/iris.csv").then((data) => {
         .enter()
         .append("rect")
         .attr("class", "bars")
-        .attr("x", function(d) { return x(d[0]) + MARGINS.left; })
-        .attr("y", function(d) { return y(d[1]) + MARGINS.top; })
+        .attr("x", function(d) { return bars_x(d[0]) + MARGINS.left; })
+        .attr("y", function(d) { return bars_y(d[1]) + MARGINS.top; })
         .style("fill", (d) => {return map_color(d[0])})
-        .attr("width", x.bandwidth())
+        .attr("width", bars_x.bandwidth())
         .attr("height", function(d) { 
-            return FRAME_HEIGHT- MARGINS.top - MARGINS.bottom - y(d[1]); 
+            return FRAME_HEIGHT- MARGINS.top - MARGINS.bottom - bars_y(d[1]); 
     });
 });
 
-// ---------------------- BRUSHING CODE ------------------------------------------------
+// ---------------------- BRUSHING AND LINKING ------------------------------------------------
+// Function that is triggered when brushing is performed
+function updateCharts(event) {
+    extent = event.selection
+    let selection_points;
+    middle_dots.classed("selected", function(d){ 
+        return isBrushed(extent, (middle_x(d.Sepal_Width) + MARGINS.left), (middle_y(d.Petal_Width) + MARGINS.top)) 
+    } );
+    left_dots.classed("selected", function(d){ 
+        return isBrushed(extent, (middle_x(d.Sepal_Width) + MARGINS.left), (middle_y(d.Petal_Width) + MARGINS.top)) 
+    } ); 
+    
+    bars.classed("selected", function(d){ 
+        return isBrushed(extent, (bars_x(d.Sepal_Width) + MARGINS.left), (bars_y(d.Petal_Width) + MARGINS.top)) 
+    });        
+};
 
+
+// Add brushing
+MIDDLE.call(d3.brush()                 // Add the brush feature using the d3.brush function
+.extent( [[0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+.on("start brush", updateCharts) // Each time the brush selection changes, trigger the 'updateChart' function
+);
+
+
+
+// A function that return TRUE or FALSE according if a dot is in the selection or not
+function isBrushed(brush_coords, cx, cy) {
+var x0 = brush_coords[0][0],
+   x1 = brush_coords[1][0],
+   y0 = brush_coords[0][1],
+   y1 = brush_coords[1][1];
+return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;    // This return TRUE or FALSE depending on if the points is in the selected area
+}
+
+});
