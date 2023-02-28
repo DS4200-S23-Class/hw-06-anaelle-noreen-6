@@ -130,22 +130,23 @@ d3.csv("data/iris.csv").then((data) => {
 
 
         // Function that is triggered when brushing is performed
-    function updateChartMiddle(event) {
-    extent = event.selection
-    middle_dots.classed("selected", function(d){ return isBrushed(extent, (middle_x(d.Sepal_Width) + MARGINS.left), (middle_y(d.Petal_Width) + MARGINS.top)) } )
-    left_dots.classed("selected", function(d){ return isBrushed(extent, (left_x(d.Sepal_Length) + MARGINS.left), (left_y(d.Petal_Length) + MARGINS.top)) } )
+    function updateChartLeft(event) {
+        extent = event.selection
+        left_dots.classed("selected", function(d){ return isBrushed(extent, (middle_x(d.Sepal_Width) + MARGINS.left), (middle_y(d.Petal_Width) + MARGINS.top)) } )
     
-    }
-    // function updateChartLeft(event) {
-    //     extent = event.selection
-    //     // middle_dots.classed("selected", function(d){ return isBrushed(extent, (x(d.Sepal_Width) + MARGINS.left), (y(d.Petal_Width) + MARGINS.top)) } )
-    //     left_dots.classed("selected", function(d){ return isBrushed(extent, (left_x(d.Sepal_Length) + MARGINS.left), (left_y(d.Petal_Length) + MARGINS.top)) } )
-        
-    //     }
-           // Add brushing
+    };
+
+    function updateBarChart(event){
+        extent = event.selection
+        bars.classed("selected", function(d){ return isBrushed(extent, (middle_x(d.Sepal_Width) + MARGINS.left), (middle_y(d.Petal_Width) + MARGINS.top)) } )
+    
+
+    };
+   
+    // Add brushing
   MIDDLE.call(d3.brush()                 // Add the brush feature using the d3.brush function
   .extent( [[0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-  .on("start brush", updateChartMiddle) // Each time the brush selection changes, trigger the 'updateChart' function
+  .on("start brush", updateChartLeft) // Each time the brush selection changes, trigger the 'updateChart' function
   );
 //   LEFT.call(d3.brush()                 // Add the brush feature using the d3.brush function
 //   .extent( [[0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
