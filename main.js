@@ -153,6 +153,9 @@ d3.csv("data/iris.csv").then((data) => {
         .data(data)
         .enter()
         .append("rect")
+        .style("fill", (d) => {return map_color((d.Species))})
+        // for some reason this styling does not apply. It appears in teh inspector, but crossed out
+        .style("opacity", 0.5)
         .attr("class", (d) => {return d.Species})
         .attr("id", (d) => {return d.id})
         .attr("x",  (d) => {return bars_x(d.Species) + MARGINS.left})
@@ -160,10 +163,7 @@ d3.csv("data/iris.csv").then((data) => {
         .attr("width", bars_x.bandwidth())
         .attr("height", function(d) { 
             return FRAME_HEIGHT- MARGINS.top - MARGINS.bottom - bars_y(50); 
-        })
-        .style("fill", (d) => {return map_color((d.Species))})
-        // for some reason this styling does not apply. It appears in teh inspector, but crossed out
-        .style("opacity", 0.5);
+        });
     });
 
 // ---------------------- BRUSHING AND LINKING ------------------------------------------------

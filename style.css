@@ -33,6 +33,7 @@ h3{
     flex: 33.33%;
   }
 
+  /* All dots and bars with these classes should begin with opacity 0.5 */
   .setosa{
     opacity : 0.5;
   }
@@ -45,8 +46,9 @@ h3{
     opacity : 0.5;
   }
 
+  /* When middle brushing occurs, change opacity and stroke of corresponding elements */
   .selected {
-    opacity: 1;
+    opacity: 1 !important;
     stroke: orangered;
     stroke-width: 2px;
   }
