@@ -50,5 +50,5 @@ h3{
   .selected {
     opacity: 1 !important;
     stroke: orangered;
-    stroke-width: 2px;
+    stroke-width: 3px;
   }
